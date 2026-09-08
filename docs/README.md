@@ -1,33 +1,37 @@
 # BuildNote — Documentation de structuration du projet
 
-> **Statut : Couche 1 — Vision d'ensemble & cadre directeur (à valider).**
+> **Statut : Couches 1 à 7 produites (en revue).**
 > Aucune ligne de code n'est produite tant que les livrables de cadrage → conception → POC
-> ne sont pas validés.
+> ne sont pas validés (porte **J7**).
 
 Ce dépôt `docs/` contient le corpus documentaire d'ingénierie de BuildNote, produit **par couches**
 avec une porte de validation entre chacune (voir [roadmap](01-project-management/roadmap.md)).
 
-| # | Dossier | Contenu | Couche |
-|---|---------|---------|--------|
-| A | [`00-vision/`](00-vision/vision-produit.md) | Vision produit | **1** |
-| B | [`01-project-management/`](01-project-management/roadmap.md) | Charter, gouvernance, méthodo, roadmap, jalons, gestion risques/changements/versions/doc | 1 (roadmap) → 2 |
-| C | [`02-analyse-metier/`](02-analyse-metier/) | Problématique, besoins, AS-IS / TO-BE, personas, parcours, cas d'usage | 2 |
-| D | [`03-cahier-des-charges/`](03-cahier-des-charges/) | Exigences F / NF, contraintes, critères d'acceptation, KPI | 3 |
-| E | [`04-architecture-fonctionnelle/`](04-architecture-fonctionnelle/architecture-fonctionnelle.md) | Les deux modules, clairement séparés | **1** |
-| F | [`05-architecture-technique/`](05-architecture-technique/) | Scénarios d'architecture comparés | 3 |
-| G | [`06-architecture-donnees/`](06-architecture-donnees/vue-ensemble.md) | Modèles conceptuel / logique / physique ; Raw / Normalized / Intelligence | **1** (vue) → 4 |
-| H | [`07-interoperabilite/`](07-interoperabilite/vue-ensemble.md) | Modèle canonique, connecteurs, mapping, ETL, conflits, lineage, versioning schéma, qualité | **1** (vue) → 4 |
-| I | [`08-ocr-computer-vision/`](08-ocr-computer-vision/) | Pipeline capture → … → validation humaine → stockage | 5 |
-| J | [`09-moteur-orientation/`](09-moteur-orientation/vue-ensemble.md) | Fusion multi-sources + explicabilité + dimension stratégique nationale | **1** (vue) → 5 |
-| K | [`10-securite/`](10-securite/) | Authn, authz, chiffrement, journalisation, sauvegardes, isolation établissements, audit | 6 |
-| L | [`11-ux-ui/`](11-ux-ui/) | Architecture UX, design system (bleu clair / orange / blanc), i18n FR/EN | 6 |
-| M | [`12-poc/`](12-poc/) | POC OCR, extraction de tableaux, interopérabilité, moteur d'orientation | 7 |
-| O | [`13-tests/`](13-tests/) | Stratégie et plans de test par type | 7 |
-| P | [`14-deploiement/`](14-deploiement/) | 6 scénarios de déploiement | 7 |
-| Q | [`15-livrables-par-phase/`](15-livrables-par-phase/livrables.md) | Pour chaque phase : objectif / activités / livrables / critères / responsables / dépendances / go-no-go | **1** → consolidé 7 |
-| — | [`16-risques/`](16-risques/risques.md) | Registre des risques majeurs + mitigations | **1** (vivant) |
-| — | [`17-decisions/`](17-decisions/decisions-prealables.md) | ADR + décisions préalables au développement | **1** (vivant) |
-| — | [`glossaire.md`](glossaire.md) | Terminologie FR (+ équivalents EN) | **1** (vivant) |
+| # | Dossier | Contenu | Couche | Statut |
+|---|---------|---------|--------|--------|
+| A | [`00-vision/`](00-vision/vision-produit.md) | Vision produit | 1 | En revue |
+| B | [`01-project-management/`](01-project-management/README.md) | Charter, gouvernance/RACI, méthodologie, roadmap, jalons, gestion changements/versions/documentaire | 1–2 | En revue |
+| C | [`02-analyse-metier/`](02-analyse-metier/README.md) | Problématique, besoins, AS-IS / TO-BE, personas, parcours, cas d'usage UC-01..14 | 2 | En revue |
+| D | [`03-cahier-des-charges/`](03-cahier-des-charges/README.md) | Exigences `EF-*` / `ENF-*`, contraintes, critères d'acceptation, KPI, traçabilité | 3 | En revue |
+| E | [`04-architecture-fonctionnelle/`](04-architecture-fonctionnelle/architecture-fonctionnelle.md) | Les deux modules, clairement séparés | 1 | En revue |
+| F | [`05-architecture-technique/`](05-architecture-technique/scenarios-architecture.md) | 3 scénarios d'architecture comparés + recommandation (hybride) + options de composants | 3–4 | En revue |
+| G | [`06-architecture-donnees/`](06-architecture-donnees/vue-ensemble.md) | Vue Raw/Normalized/Intelligence + MCD / MLD / MPD + dictionnaire + versioning | 1–4 | En revue |
+| H | [`07-interoperabilite/`](07-interoperabilite/vue-ensemble.md) | Modèle canonique, connecteurs, mapping, ETL, conflits, lineage, versioning schéma, qualité | 1–4 | En revue |
+| I | [`08-ocr-computer-vision/`](08-ocr-computer-vision/pipeline.md) | Pipeline capture → … → validation humaine → stockage + MLOps + métriques | 5 | En revue |
+| J | [`09-moteur-orientation/`](09-moteur-orientation/vue-ensemble.md) | Fusion multi-sources + scoring additif + explicabilité + référentiel stratégique national | 1–5 | En revue |
+| K | [`10-securite/`](10-securite/architecture-securite.md) | Authn, authz (RBAC/ABAC), chiffrement, isolation multi-tenant, audit, DPIA, sauvegardes, STRIDE | 6 | En revue |
+| L | [`11-ux-ui/`](11-ux-ui/architecture-ux-ui.md) | Architecture UX, design system (bleu clair / orange / blanc), i18n FR/EN, offline | 6 | En revue |
+| M | [`12-poc/`](12-poc/plans-poc.md) | Plans des 4 POC (OCR, extraction de tableaux, interopérabilité, moteur d'orientation) | 7 | En revue |
+| O | [`13-tests/`](13-tests/strategie-tests.md) | Stratégie et plans de test par type (11 types) | 7 | En revue |
+| P | [`14-deploiement/`](14-deploiement/plan-deploiement.md) | 6 scénarios de déploiement + pilote + généralisation par vagues | 7 | En revue |
+| Q | [`15-livrables-par-phase/`](15-livrables-par-phase/livrables.md) | Pour chaque phase : objectif / activités / livrables / critères / responsables / dépendances / go-no-go | 1 → 7 | En revue |
+| — | [`16-risques/`](16-risques/risques.md) | Registre des risques majeurs + mitigations | vivant | En revue |
+| — | [`17-decisions/`](17-decisions/decisions-prealables.md) | ADR + décisions préalables au développement | vivant | En revue |
+| — | [`glossaire.md`](glossaire.md) | Terminologie FR (+ équivalents EN) | vivant | En revue |
+
+**Correspondance couches ↔ phases** : Couche 1 = vue d'ensemble (transverse) · Couche 2 = Phases 0–1
+· Couche 3 = Phases 2–3 · Couche 4 = Phase 4 (données & interop) · Couche 5 = Phases 4–5 (OCR &
+orientation) · Couche 6 = Phases 4–5 (sécurité & UX) · Couche 7 = Phases 6–7 + cadrage 9–11.
 
 > **N (MVP)** : le porteur ne souhaite pas de MVP mais la solution de production directe. Ce choix
 > est documenté et challengé dans [`16-risques/`](16-risques/risques.md) et

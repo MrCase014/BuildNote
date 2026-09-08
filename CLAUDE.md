@@ -1,163 +1,114 @@
-# BuildNote — Référence projet pour les assistants IA
+# BuildNote — Carte du projet
 
-> Ce fichier est la **carte du projet**. Tout modèle (Claude Code, agents, autres LLM) doit le lire
-> **avant toute modification** et s'y référer pour savoir *où* écrire, *dans quelle langue*, *à quelle
-> couche* et *ce qui est interdit à ce stade*.
-> `CLAUDE.md` et `AGENTS.md` ont un contenu identique — mettre à jour les deux ensemble.
+> Fichier de contexte pour les assistants IA. **`CLAUDE.md` et `AGENTS.md` (racine) ont un contenu
+> identique — les modifier ensemble.** À maintenir à jour à chaque changement de structure.
 
----
+## Nature du projet
 
-## 1. Nature du projet
+BuildNote est une **plateforme d'aide à la décision éducative** (primaire, secondaire, supérieur),
+**initiative privée**, ambition **multi-établissements**, contexte **camerounais** (extensible
+multi-pays). Deux **modules fonctionnellement séparés** + un socle commun :
 
-**BuildNote** = plateforme d'aide à la décision éducative (initiative **privée**, ambition
-multi-établissements, **Cameroun**, extensible multi-pays). Deux modules **fonctionnellement
-séparés**, ne partageant que le socle commun et communiquant par contrats d'API explicites :
+1. **Module 1 — Capture & gestion des données académiques** : photo/vidéo d'une fiche → OCR / CV /
+   Document Understanding → formulaire prérempli → **vérification humaine OBLIGATOIRE** → validation
+   → stockage. L'OCR n'enregistre jamais sans revue humaine.
+2. **Module 2 — Orientation** : (a) *dashboard de situation* par classe/établissement, **rafraîchi à
+   la demande** ; (b) *orientation individuelle* combinant parcours, résultats, tendances,
+   compétences, intérêts, aspirations, **avis des parents**, offre de formation accessible
+   (géolocalisée), métiers, et **besoins stratégiques nationaux** → **recommandations explicables**.
+   **Aucun recalcul automatique** à l'enregistrement d'une note. Aide à la décision, jamais
+   prescription.
 
-| | Module 1 — Capture & gestion des données académiques | Module 2 — Orientation scolaire & universitaire |
-|---|---|---|
-| **But** | Transformer une fiche physique en données structurées **vérifiées** | Éclairer l'orientation + lire la performance (dashboard) |
-| **Cœur** | OCR / Computer Vision / Document Understanding + **validation humaine obligatoire** | Moteur de règles + scoring multi-critères pondéré + génération d'**explications** |
-| **Couplage** | Écrit dans la base normalisée (après validation) | Lit la base normalisée + le référentiel stratégique national, **à la demande** |
+Transverse : interopérabilité **par modèle canonique + connecteurs** (jamais « compat SQL
+universelle ») ; données en 3 strates **Raw / Normalized / Intelligence** ; **isolation stricte des
+établissements** (multi-tenant) ; UI **bilingue FR/EN** (sélecteur dès l'accueil) ; palette **bleu
+clair / orange / blanc** ; **faible connectivité** (Module 1 offline-first).
 
-**Règles produit non négociables :**
-1. Le Module 2 **ne recalcule rien automatiquement** ; dashboard et orientation lisent les bases **à la demande**.
-2. Le Module 1 n'enregistre **jamais** une sortie OCR sans **revue humaine**.
-3. Les recommandations d'orientation sont **explicables** et restent une **aide à la décision** — aucune carrière imposée.
+## Règles de travail
 
-Contexte de conception : SI scolaires hétérogènes ou inexistants, connectivité faible
-(**offline-first** pour le Module 1), matériel modeste, interface **bilingue FR/EN**, architecture
-**modulaire, interopérable, multi-tenant**.
+- **AUCUNE ligne de code** avant la porte de décision **J7** (après les POC). Le dépôt ne contient
+  aujourd'hui que de la **documentation** (`docs/`) et des visuels de marque.
+- Documentation **en français** (le produit reste bilingue FR/EN), **Markdown + diagrammes
+  Mermaid**, versionnée, revue.
+- Production **par couches (1→7) avec porte de validation** entre chacune.
+- Chaque document porte un en-tête `Statut` (Brouillon / En revue / Validé) + date.
+- Décisions d'architecture tracées en **ADR** dans `docs/17-decisions/`.
+- Ne pas réintroduire de MVP jetable : V1 = solution de production, avec **déploiement pilote
+  progressif** (1 établissement d'abord).
+- Toute demande touchant une **règle non négociable** (validation humaine OCR ; Module 2 sans
+  recalcul auto ; dashboard à la demande ; explicabilité ; isolation établissements ;
+  interopérabilité par canonique ; FR/EN) = changement **critique** (voir
+  `docs/01-project-management/gestion-changements-versions-documentaire.md`).
 
----
-
-## 2. Règles de travail (état au 2026-09-08)
-
-- **Aucun code** tant que cadrage → conception → POC ne sont pas validés. Le code démarre en
-  **Phase 8**, après le Go/No-Go de la **Phase 7**. Les phases 0→6 sont **sans code**.
-- Toute la production vit dans **`docs/`** : **Markdown + diagrammes Mermaid**, **en français**
-  (le produit reste bilingue FR/EN).
-- Production **par couches**, avec une **porte de validation** entre chacune. Ne pas produire une
-  couche N+1 tant que la couche N n'est pas validée.
-- **Pas de MVP** (choix du porteur) → recommandation actée : **déploiement pilote progressif**.
-- Chaque document porte un en-tête `> **Statut : …**` (Brouillon / En revue / Validé / À produire /
-  Vivant) et une **date**.
-- Les décisions d'architecture se tracent en **ADR** dans `docs/17-decisions/`.
-- Terminologie imposée : `docs/glossaire.md` (FR + équivalent EN). Réutiliser ces termes exactement.
-- Dates : **absolues** (jamais « la semaine prochaine »).
-
----
-
-## 3. Structure du dépôt
+## Arborescence `docs/`
 
 ```
-BuildNote/
-├── CLAUDE.md                     # ce fichier (référence projet)
-├── AGENTS.md                     # copie identique de CLAUDE.md
-├── images/                       # logos (logo.jpeg, logo1..4.jpeg) — actifs de marque
-└── docs/                         # corpus documentaire d'ingénierie (Markdown + Mermaid)
-    ├── README.md                 # PORTE D'ENTRÉE : table des couches + synthèse exécutive (10 points) — suivi d'avancement
-    ├── glossaire.md              # [Vivant] terminologie FR/EN imposée
-    │
-    ├── 00-vision/
-    │   └── vision-produit.md     # [Couche 1] A. Vision produit
-    ├── 01-project-management/
-    │   ├── roadmap.md            # [Couche 1] B. Phases 0→11, jalons J0→J11, portes go/no-go
-    │   ├── project-charter.md    # [Couche 2] B.1 document fondateur
-    │   ├── gouvernance.md        # [Couche 2] B.2 principes, RACI
-    │   ├── methodologie.md       # [Couche 2] B.3 hybride à portes de décision
-    │   └── gestion-changements-versions-documentaire.md  # [Couche 2] B.4
-    ├── 02-analyse-metier/
-    │   ├── README.md             # sommaire de la section
-    │   ├── analyse-metier.md     # [Couche 2] C. problématique, besoins, AS-IS/TO-BE
-    │   ├── personas.md           # [Couche 2] C. personas & parcours utilisateurs
-    │   └── cas-usage.md          # [Couche 2] C. cas d'utilisation
-    ├── 03-cahier-des-charges/
-    │   ├── README.md             # sommaire de la section
-    │   ├── exigences-fonctionnelles.md        # [Couche 3] D. exigences F
-    │   ├── exigences-non-fonctionnelles.md    # [Couche 3] D. exigences NF
-    │   └── contraintes-kpi-tracabilite.md     # [Couche 3] D. contraintes, critères d'acceptation, KPI, matrice de traçabilité
-    ├── 04-architecture-fonctionnelle/
-    │   └── architecture-fonctionnelle.md  # [Couche 1] E. les 2 modules, séparés
-    ├── 05-architecture-technique/
-    │   ├── README.md             # sommaire de la section
-    │   └── scenarios-architecture.md  # [Couche 3/4] F. scénarios d'architecture comparés + choix
-    ├── 06-architecture-donnees/
-    │   ├── vue-ensemble.md       # [Couche 1] G. strates Raw / Normalized / Intelligence
-    │   └── modele-conceptuel-logique-physique.md  # [Couche 4] G. MCD / MLD / MPD + dictionnaire de données
-    ├── 07-interoperabilite/
-    │   ├── vue-ensemble.md       # [Couche 1] H. modèle canonique, connecteurs, mapping, ETL
-    │   └── architecture-detaillee.md  # [Couche 4] H. catalogue connecteurs, langage de mapping, conflits, lineage, versioning schéma, qualité
-    ├── 08-ocr-computer-vision/
-    │   └── README.md             # [À produire — Couche 5] I. pipeline capture → validation humaine → stockage
-    ├── 09-moteur-orientation/
-    │   └── vue-ensemble.md       # [Couche 1] J. fusion multi-sources + explicabilité + dimension nationale (détail → Couche 5)
-    ├── 10-securite/
-    │   └── README.md             # [À produire — Couche 6] K. authn/authz, chiffrement, audit, isolation multi-tenant
-    ├── 11-ux-ui/
-    │   └── README.md             # [À produire — Couche 6] L. UX, design system (bleu clair / orange / blanc), i18n FR/EN
-    ├── 12-poc/
-    │   └── README.md             # [À produire — Couche 7] M. POC OCR, extraction tableaux, interop, moteur d'orientation (jetables)
-    ├── 13-tests/
-    │   └── README.md             # [À produire — Couche 7] O. stratégie et plans de test
-    ├── 14-deploiement/
-    │   └── README.md             # [À produire — Couche 7] P. 6 scénarios de déploiement
-    ├── 15-livrables-par-phase/
-    │   └── livrables.md          # [Couche 1] Q. par phase : objectif/activités/livrables/critères/responsables/dépendances/go-no-go
-    ├── 16-risques/
-    │   └── risques.md            # [Vivant] registre R1→R12 + mitigations, revu à chaque jalon
-    └── 17-decisions/
-        └── decisions-prealables.md  # [Vivant] 12 décisions à arbitrer en Phase 2 + ADR
+docs/
+  README.md                         Index + synthèse exécutive (10 points) — POINT D'ENTRÉE
+  00-vision/vision-produit.md        A. Vision, mission, valeur, objectifs, utilisateurs, parties prenantes
+  01-project-management/             B. Charter · gouvernance/RACI · méthodologie · roadmap · changements/versions/doc
+  02-analyse-metier/                 C. Problématique · besoins (MoSCoW) · AS-IS/TO-BE · personas · cas d'usage UC-01..14
+  03-cahier-des-charges/             D. Exigences EF-* / ENF-* · contraintes · critères d'acceptation · KPI · traçabilité
+  04-architecture-fonctionnelle/     E. Deux modules séparés + socle + contrats + règles non négociables
+  05-architecture-technique/         F. 3 scénarios comparés → recommandation "hybride" + options de composants
+  06-architecture-donnees/           G. Raw/Normalized/Intelligence · MCD/MLD/MPD · dictionnaire · versioning schéma
+  07-interoperabilite/               H. Modèle canonique · connecteurs · mapping · ETL · conflits · lineage · qualité
+  08-ocr-computer-vision/            I. Pipeline 10 étapes (→ validation humaine → stockage) · MLOps · métriques
+  09-moteur-orientation/             J. Fusion 6 catégories · scoring additif pondéré · explicabilité · référentiel national
+  10-securite/                       K. Authn · RBAC/ABAC · chiffrement · isolation multi-tenant · audit · DPIA · STRIDE
+  11-ux-ui/                          L. Architecture UX · design system (bleu clair/orange/blanc) · i18n FR/EN · offline
+  12-poc/                            M. Plans des 4 POC (OCR · tableaux · interopérabilité · orientation) — Phase 6
+  13-tests/                          O. Stratégie + 11 types de test — Phases 8–9
+  14-deploiement/                    P. 6 scénarios + pilote + généralisation par vagues
+  15-livrables-par-phase/livrables.md Q. Par phase : objectif/activités/livrables/critères/responsables/dépendances/go-no-go
+  16-risques/risques.md              Registre R1..R19 + mitigations (vivant)
+  17-decisions/decisions-prealables.md 12 décisions à arbitrer en Phase 2 + modèle d'ADR (vivant)
+  glossaire.md                       Terminologie FR (+ EN)
 ```
 
-### Correspondance couches ↔ phases
+## Correspondance couches ↔ phases du cycle de vie
 
-| Couche | Contenu | Phase(s) du cycle de vie |
+| Couche | Sections | Phases couvertes |
 |---|---|---|
-| **1** (livrée le 2026-09-08, à valider) | Vision, archi fonctionnelle, vues d'ensemble données/interop/orientation, roadmap, livrables, risques, décisions, glossaire | 0 |
-| **2** | Project management complet, analyse métier, personas, cas d'usage | 0–1 |
-| **3** | Cahier des charges, architecture technique | 2–3 |
-| **4** | Architecture données détaillée (MCD/MLD/MPD), interopérabilité détaillée, sécurité | 4 |
-| **5** | OCR/CV détaillé, moteur d'orientation détaillé | 4–5 |
-| **6** | Sécurité, UX/UI | 4–6 |
-| **7** | POC, tests, déploiement, consolidation des livrables | 6–7 |
+| 1 | Vision, archi fonctionnelle, vues d'ensemble données/interop/orientation, roadmap, livrables, risques, décisions | Transverse (cadrage directeur) |
+| 2 | Project management complet, analyse métier | Phases 0–1 |
+| 3 | Cahier des charges, scénarios d'architecture technique | Phases 2–3 |
+| 4 | Données (MCD/MLD/MPD), interopérabilité détaillée | Phase 4 |
+| 5 | Pipeline OCR/CV, moteur d'orientation détaillé | Phases 4–5 |
+| 6 | Sécurité, UX/UI | Phases 4–5 |
+| 7 | POC, tests, déploiement, consolidation des livrables | Phases 6–7 (+ cadrage 9–11) |
 
-> Les fichiers `README.md` marqués **« À produire »** sont des **stubs** : ils décrivent le contenu
-> attendu de la section et sa couche. Ne pas les étoffer avant que leur couche soit ouverte.
+Phases : `0` Cadrage · `1` Analyse · `2` Faisabilité + décisions · `3` Spécification · `4`
+Conception/architecture · `5` UX/UI · `6` POC · **`7` GO/NO-GO (premier code)** · `8` Développement
+(lots L0–L5) · `9` Recette · `10` Pilote (1 étab.) · `11` Généralisation par vagues.
 
----
+## Où intervenir selon la demande
 
-## 4. Où intervenir selon la demande
-
-| La demande porte sur… | Fichier(s) à modifier |
+| La demande porte sur… | Fichier(s) |
 |---|---|
-| Vision, finalités, cibles | `docs/00-vision/vision-produit.md` |
-| Phases, jalons, planning, portes | `docs/01-project-management/roadmap.md` (+ autres fichiers `01-*` si Couche 2) |
-| Séparation des modules, contrats, flux fonctionnels | `docs/04-architecture-fonctionnelle/architecture-fonctionnelle.md` |
-| Exigences F / NF, contraintes, critères d'acceptation, KPI | `docs/03-cahier-des-charges/exigences-fonctionnelles.md`, `exigences-non-fonctionnelles.md`, `contraintes-kpi-tracabilite.md` |
-| Scénarios d'architecture technique, choix de stack | `docs/05-architecture-technique/scenarios-architecture.md` |
-| Strates de données, modèle canonique | `docs/06-architecture-donnees/vue-ensemble.md` ; MCD/MLD/MPD → `modele-conceptuel-logique-physique.md` |
-| Connecteurs, mapping, ETL, qualité des données | `docs/07-interoperabilite/vue-ensemble.md` ; détail → `architecture-detaillee.md` |
-| Pipeline OCR / vérification humaine | `docs/09-moteur-orientation/vue-ensemble.md` (moteur) / `docs/08-ocr-computer-vision/README.md` (pipeline) |
-| Explicabilité, scoring, référentiel national | `docs/09-moteur-orientation/vue-ensemble.md` |
-| Un risque nouveau ou modifié | `docs/16-risques/risques.md` |
-| Une décision structurante | `docs/17-decisions/decisions-prealables.md` (option + recommandation) ou nouvel **ADR** |
+| Vision, valeur, périmètre, parties prenantes | `docs/00-vision/vision-produit.md`, `docs/01-project-management/project-charter.md` |
+| Planning, jalons, gouvernance, méthode, changements | `docs/01-project-management/` |
+| Besoins, processus, personas, cas d'usage | `docs/02-analyse-metier/` |
+| Une exigence (fonctionnelle / non fonctionnelle), un KPI | `docs/03-cahier-des-charges/` |
+| Séparation des modules, contrats, règles non négociables | `docs/04-architecture-fonctionnelle/architecture-fonctionnelle.md` |
+| Choix d'architecture technique, composants, stack | `docs/05-architecture-technique/scenarios-architecture.md` + ADR |
+| Modèle de données, entités, MCD/MLD/MPD, strates | `docs/06-architecture-donnees/` |
+| Connecteurs, mapping, import/export, conflits, lineage | `docs/07-interoperabilite/` |
+| Pipeline OCR/CV, scores de confiance, validation humaine | `docs/08-ocr-computer-vision/pipeline.md` |
+| Scoring d'orientation, explicabilité, référentiel national | `docs/09-moteur-orientation/architecture-detaillee.md` |
+| Auth, rôles, chiffrement, multi-tenant, RGPD, DPIA | `docs/10-securite/architecture-securite.md` |
+| Écrans, design system, palette, i18n, offline UX | `docs/11-ux-ui/architecture-ux-ui.md` |
+| Ce qu'il faut prouver avant de coder | `docs/12-poc/plans-poc.md` |
+| Comment tester | `docs/13-tests/strategie-tests.md` |
+| Comment/où déployer | `docs/14-deploiement/plan-deploiement.md` |
+| Livrables et critères de passage d'une phase | `docs/15-livrables-par-phase/livrables.md` |
+| Un risque | `docs/16-risques/risques.md` |
+| Une décision à arbitrer, un ADR | `docs/17-decisions/decisions-prealables.md` |
 | Un terme métier/technique | `docs/glossaire.md` |
-| Livrables / critères de validation d'une phase | `docs/15-livrables-par-phase/livrables.md` |
-| Suivi d'avancement, table des couches | `docs/README.md` |
 
-**Après toute modification de structure** (nouveau dossier/fichier, changement de couche, de statut) :
-mettre à jour la table de `docs/README.md` **et** l'arborescence de la section 3 ci-dessus (dans
-`CLAUDE.md` et `AGENTS.md`).
+## Décisions préalables non tranchées (à arbitrer en Phase 2)
 
----
-
-## 5. Checklist avant d'écrire
-
-- [ ] La demande relève-t-elle d'une couche **déjà ouverte** ? Sinon, le signaler et ne pas produire.
-- [ ] Est-ce du **code** ? Si oui → refuser à ce stade (phases 0–6 sans code) et proposer l'équivalent documentaire.
-- [ ] Rédaction **en français**, format **Markdown**, diagrammes en **Mermaid**.
-- [ ] En-tête `Statut` + date présent et cohérent.
-- [ ] Termes conformes au **glossaire** ; enrichir le glossaire si un terme manque.
-- [ ] Liens internes relatifs corrects (`../dossier/fichier.md`).
-- [ ] Répercuter dans `docs/README.md` (table des couches / suivi) et dans l'arborescence de ce fichier si la structure change.
-- [ ] Cohérence avec les **3 règles produit non négociables** (§1) et les décisions déjà arbitrées.
+Hébergement/souveraineté · cadre juridique & rétention · stratégie OCR (managé/open source/mixte) ·
+modèle multi-tenant · gouvernance du référentiel stratégique national · périmètre V1 · « pas de
+MVP » vs pilote progressif · cible de connectivité · modèle économique · stack technologique ·
+politique linguistique · propriété intellectuelle. Détail : `docs/17-decisions/decisions-prealables.md`.
