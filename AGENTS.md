@@ -32,21 +32,37 @@ Contexte de conception : SI scolaires hétérogènes ou inexistants, connectivit
 
 ## 2. Règles de travail (état au 2026-09-09)
 
-- **Code : dérogation en vigueur** ([`docs/17-decisions/ADR-0001`](docs/17-decisions/ADR-0001-derogation-code-avant-j7.md)).
-  Le développement est ouvert **uniquement** sur la **chaîne d'acquisition du Module 1** (capture →
-  formulaire prérempli → vérification humaine → validation → stockage Raw/Normalized), stack fixée
-  par [`ADR-0002`](docs/17-decisions/ADR-0002-stack-technologique-v1.md). **Tout le reste**
-  (Module 2, interopérabilité, autres pans du socle) **reste gelé** jusqu'à J7.
-  - Le moteur OCR n'est **pas** choisi : passer par l'interface `OcrProvider` (fournisseur simulé).
-  - Les règles produit non négociables (§1) sont **vérifiées par des tests** (garde-fous).
-  - Pas de MVP jetable : viser la V1 de production.
-  - Le code vit dans `packages/` et `apps/` ; `docs/` reste la référence d'ingénierie, tout écart
-    code ↔ doc est réconcilié dans `docs/`.
+- **Code : tout le périmètre est ouvert** ([`ADR-0004`](docs/17-decisions/ADR-0004-consolidation-flux-unique-developpement.md)).
+  Socle, Module 1, Module 2 **et** interopérabilité peuvent être développés. Le gel « rien avant
+  J7 » est levé ; **J7 devient une revue « prêt pour le pilote »**, pas une barrière. Les
+  ADR-0001/0003 (dérogations de périmètre) sont ainsi **absorbés** par ADR-0004 ; leurs conditions
+  restent en vigueur.
+  - **Flux de développement unique** : tronc `main`, **branches de fonctionnalité courtes**, **PR
+    revues une à la fois**. Plus de sessions parallèles ni de worktrees partagés (le §Sessions
+    d'ADR-0003 est abrogé). Le travail avance par **lots** :
+    [`docs/18-plan-developpement/plan-de-developpement.md`](docs/18-plan-developpement/plan-de-developpement.md)
+    (L0 socle → L6 durcissement/pilote).
+  - Les **règles produit non négociables (§1) sont vérifiées par des tests** (garde-fous) ; la CI
+    échoue si un garde-fou manque ou casse.
+  - **Frontières à risque derrière une interface** : OCR (`OcrProvider`, simulé par défaut — moteur
+    non choisi), stockage objet (`BlobStore`), SGBD (Drizzle), identité/tenant (`IdentityProvider`),
+    orientation (`OrientationDataGateway`, `ReferentialProvider`, `ScoringWeights`,
+    `ExplanationTemplateCatalog`), connecteurs d'interopérabilité.
+  - Stack fixée par [`ADR-0002`](docs/17-decisions/ADR-0002-stack-technologique-v1.md) (monorepo
+    TypeScript), + [`ADR-0005`](docs/17-decisions/ADR-0005-multi-tenant-et-hebergement.md)
+    (une instance PostgreSQL par établissement, on-premise ; `etablissement_id` + RLS partout) +
+    [`ADR-0006`](docs/17-decisions/ADR-0006-socle-securite-v1.md) (session serveur + Argon2id +
+    RBAC par établissement).
+  - **Pas de MVP jetable** : viser la V1 de production, déploiement **pilote progressif** (un
+    établissement à la fois).
+  - Le code vit dans `packages/` et `apps/` ; `docs/` reste la **référence d'ingénierie**, tout
+    écart code ↔ doc est **réconcilié dans `docs/`**.
+  - **Les POC** (OCR 1/2, POC-VH, POC 4) sont menés **contre le code réel** et peuvent imposer des
+    retouches, bornées par les interfaces.
 - La **documentation** vit dans **`docs/`** : **Markdown + diagrammes Mermaid**, **en français**
   (le produit reste bilingue FR/EN). Le **code** est commenté en français, identifiants en anglais.
-- Production **par couches**, avec une **porte de validation** entre chacune. Ne pas produire une
-  couche N+1 tant que la couche N n'est pas validée.
-- **Pas de MVP** (choix du porteur) → recommandation actée : **déploiement pilote progressif**.
+- La **conception documentaire** se poursuit **par couches** (portes de validation entre couches) ;
+  elle ne bloque plus le code, qui avance par lots en parallèle.
 - Chaque document porte un en-tête `> **Statut : …**` (Brouillon / En revue / Validé / À produire /
   Vivant) et une **date**.
 - Les décisions d'architecture se tracent en **ADR** dans `docs/17-decisions/`.
@@ -64,11 +80,18 @@ BuildNote/
 ├── README.md                    # entrée développeurs (monorepo, démarrage) — cf. ADR-0001/0002
 ├── package.json                 # npm workspaces (packages/*, apps/*)
 ├── images/                       # logos (logo.jpeg, logo1..4.jpeg) — actifs de marque
+├── package-lock.json           # verrou npm (commité)
+├── tsconfig.base.json          # config TS partagée (NodeNext, strict)
+├── .github/workflows/ci.yml    # CI : typecheck, lint, lint i18n, tests (garde-fous)
+├── scripts/lint-i18n.mjs       # parité FR/EN, placeholders, texte en dur
 ├── packages/
-│   └── shared/                  # modèle canonique + contrats Zod (acquisition, OcrProvider) + i18n FR/EN
+│   └── shared/                  # modèle canonique + contrats Zod (acquisition, OcrProvider, orientation) + i18n FR/EN
 ├── apps/
-│   ├── api/                     # Fastify + Drizzle (PostgreSQL/PGlite) + BlobStore + OcrProvider — chaîne d'acquisition Module 1
-│   └── web/                     # React + Vite, PWA offline-first — capture + écran de vérification humaine
+│   ├── api/                     # Fastify + Drizzle (PostgreSQL/PGlite) + BlobStore + OcrProvider
+│   │                            #   src/{routes,services,db,ocr,blob,plugins} — acquisition Module 1
+│   │                            #   src/orientation/ — service Module 2 (gateway, profileur, scoreur, règles, explications)
+│   │                            #   test/ — garde-fous acquisition ; test/orientation/ — garde-fous Module 2
+│   └── web/                     # React + Vite, PWA offline-first — À CRÉER (lot L2/L4)
 └── docs/                         # corpus documentaire d'ingénierie (Markdown + Mermaid)
     ├── README.md                 # PORTE D'ENTRÉE : table des couches + synthèse exécutive (10 points) — suivi d'avancement
     ├── glossaire.md              # [Vivant] terminologie FR/EN imposée
@@ -124,8 +147,16 @@ BuildNote/
     │   └── livrables.md          # [Couche 1] Q. par phase : objectif/activités/livrables/critères/responsables/dépendances/go-no-go
     ├── 16-risques/
     │   └── risques.md            # [Vivant] registre R1→R12 + mitigations, revu à chaque jalon
-    └── 17-decisions/
-        └── decisions-prealables.md  # [Vivant] 12 décisions à arbitrer en Phase 2 + ADR
+    ├── 17-decisions/
+    │   ├── decisions-prealables.md  # [Vivant] 12 décisions à arbitrer + table des ADR
+    │   ├── ADR-0001-…              # dérogation code Module 1 (absorbé par ADR-0004)
+    │   ├── ADR-0002-…              # stack technologique (monorepo TypeScript)
+    │   ├── ADR-0003-…              # extension dérogation Module 2 (absorbé par ADR-0004)
+    │   ├── ADR-0004-…              # consolidation, flux unique, levée du gel  ← RÉGIME ACTUEL
+    │   ├── ADR-0005-…              # multi-tenant (base/établissement) + hébergement on-premise
+    │   └── ADR-0006-…              # socle sécurité v1 (session + Argon2id + RBAC)
+    └── 18-plan-developpement/
+        └── plan-de-developpement.md # [Vivant] lots de code L0→L6, portes de sortie
 ```
 
 ### Correspondance couches ↔ phases
@@ -160,7 +191,8 @@ BuildNote/
 | Exécution des POC d'acquisition (OCR, tableaux, écran de vérification) | `docs/12-poc/acquisition/` (protocole · jeux · harnais · verification-humaine · rapport) |
 | Explicabilité, scoring, référentiel national | `docs/09-moteur-orientation/vue-ensemble.md` |
 | Un risque nouveau ou modifié | `docs/16-risques/risques.md` |
-| Une décision structurante | `docs/17-decisions/decisions-prealables.md` (option + recommandation) ou nouvel **ADR** |
+| Une décision structurante | nouvel **ADR** dans `docs/17-decisions/` + ligne dans `decisions-prealables.md` |
+| Priorité / découpage / porte de sortie d'un lot de code | `docs/18-plan-developpement/plan-de-developpement.md` |
 | Un terme métier/technique | `docs/glossaire.md` |
 | Livrables / critères de validation d'une phase | `docs/15-livrables-par-phase/livrables.md` |
 | Suivi d'avancement, table des couches | `docs/README.md` |
@@ -183,10 +215,11 @@ mettre à jour la table de `docs/README.md` **et** l'arborescence de la section 
 - [ ] Cohérence avec les **3 règles produit non négociables** (§1) et les décisions déjà arbitrées.
 
 **Pour du code (`packages/`, `apps/`)**
-- [ ] Le périmètre est-il la **chaîne d'acquisition du Module 1** ? Sinon (Module 2, interop, autre socle) → refuser, c'est gelé jusqu'à J7 ([ADR-0001](docs/17-decisions/ADR-0001-derogation-code-avant-j7.md)).
-- [ ] Aucune écriture Normalized sans **validation humaine explicite** (`EF-M1-10`) ; aucun événement/appel Module 2 (`EF-M1-19`) ; Raw **immuable** ; `etablissement_id` sur toute donnée métier.
-- [ ] Reconnaissance uniquement via l'interface **`OcrProvider`** — pas d'appel direct à un moteur, pas de choix de moteur.
+- [ ] Travailler sur une **branche de fonctionnalité courte** partant de `main` ; viser une **PR
+  revue**. Pas de worktree partagé, pas de session parallèle sur le même arbre non commité.
+- [ ] Le lot visé est-il cohérent avec [`plan-de-developpement.md`](docs/18-plan-developpement/plan-de-developpement.md) ? Respecter l'ordre L0→L6 (vertical avant horizontal).
+- [ ] **Garde-fous non négociables** (cf. [ADR-0004 §3](docs/17-decisions/ADR-0004-consolidation-flux-unique-developpement.md)) : aucune écriture Normalized sans validation humaine explicite (`EF-M1-10/11`) ; `RAW` immuable ; aucun déclenchement Module 2 par une écriture de note (`EF-M1-19`) ; Module 2 lit **à la demande**, n'écrit rien en Normalized (`EF-M2-02/25`), reste une aide (non-prescription `EF-M2-19/26`), explicabilité = somme des contributions (`EF-M2-18`), consentement (`EF-M2-11`) ; `etablissement_id` + RLS sur toute donnée métier ; séparation stricte M1 ↔ M2 (seul `packages/shared` partagé).
+- [ ] Frontières à risque derrière une **interface** : `OcrProvider` (simulé par défaut, pas de choix de moteur), `BlobStore`, Drizzle, `IdentityProvider`, `OrientationDataGateway`, `ReferentialProvider`, `ScoringWeights`, `ExplanationTemplateCatalog`, connecteurs.
 - [ ] Textes UI **externalisés FR/EN** (aucun libellé en dur) ; identifiants en anglais, commentaires en français.
-- [ ] Frontières à risque (OCR, stockage objet, SGBD, auth/tenant) derrière une **interface**.
-- [ ] Tests des garde-fous non négociables ajoutés / maintenus verts.
-- [ ] Réconcilier tout écart code ↔ `docs/` (surtout `06-architecture-donnees/`, `08-ocr-computer-vision/`).
+- [ ] `npm run typecheck && npm test && npm run lint:i18n` **verts** avant de committer ; garde-fous couverts par un test.
+- [ ] Réconcilier tout écart code ↔ `docs/` (surtout `06-architecture-donnees/`, `08-ocr-computer-vision/`, `09-moteur-orientation/`, `10-securite/`).

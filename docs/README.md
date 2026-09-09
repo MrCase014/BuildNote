@@ -1,8 +1,12 @@
 # BuildNote — Documentation de structuration du projet
 
-> **Statut : Couche 1 — Vision d'ensemble & cadre directeur (à valider).**
-> Aucune ligne de code n'est produite tant que les livrables de cadrage → conception → POC
-> ne sont pas validés.
+> **Statut : conception documentaire par couches (couches 1→7 en revue) + développement du code en
+> cours.**
+> Depuis le 2026-09-09, le gel « pas de code avant J7 » est levé
+> ([ADR-0004](17-decisions/ADR-0004-consolidation-flux-unique-developpement.md)) : tout le périmètre
+> de code est ouvert, en flux de développement unique, garde-fous produit vérifiés en CI. Le code
+> avance par **lots** ([18-plan-developpement/](18-plan-developpement/plan-de-developpement.md)) ;
+> la conception documentaire garde son rythme par couches et est réconciliée au fil de l'eau.
 
 Ce dépôt `docs/` contient le corpus documentaire d'ingénierie de BuildNote, produit **par couches**
 avec une porte de validation entre chacune (voir [roadmap](01-project-management/roadmap.md)).
@@ -26,7 +30,8 @@ avec une porte de validation entre chacune (voir [roadmap](01-project-management
 | P | [`14-deploiement/`](14-deploiement/) | 6 scénarios de déploiement | 7 |
 | Q | [`15-livrables-par-phase/`](15-livrables-par-phase/livrables.md) | Pour chaque phase : objectif / activités / livrables / critères / responsables / dépendances / go-no-go | **1** → consolidé 7 |
 | — | [`16-risques/`](16-risques/risques.md) | Registre des risques majeurs + mitigations | **1** (vivant) |
-| — | [`17-decisions/`](17-decisions/decisions-prealables.md) | ADR + décisions préalables au développement | **1** (vivant) |
+| — | [`17-decisions/`](17-decisions/decisions-prealables.md) | ADR (0001→0006) + décisions préalables | **1** (vivant) |
+| — | [`18-plan-developpement/`](18-plan-developpement/plan-de-developpement.md) | Lots de code L0→L6, portes de sortie | (vivant) |
 | — | [`glossaire.md`](glossaire.md) | Terminologie FR (+ équivalents EN) | **1** (vivant) |
 
 > **N (MVP)** : le porteur ne souhaite pas de MVP mais la solution de production directe. Ce choix

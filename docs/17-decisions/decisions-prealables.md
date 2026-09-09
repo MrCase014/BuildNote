@@ -5,17 +5,26 @@
 > conception d'architecture définitive et **avant toute ligne de code**.
 > Chaque décision arbitrée devient un **ADR** dans ce dossier (`ADR-000x-titre.md`).
 >
-> **2026-09-09 — dérogation** : le développement de la **chaîne d'acquisition du Module 1** a
-> démarré par anticipation ([ADR-0001](ADR-0001-derogation-code-avant-j7.md)), avec une stack fixée
-> pour ce périmètre ([ADR-0002](ADR-0002-stack-technologique-v1.md)). Les décisions #1, #2, #3
-> (moteur OCR), #4, #7 restent ouvertes ; le code les tient derrière des interfaces.
+> **2026-09-09 — le gel du code est levé** ([ADR-0004](ADR-0004-consolidation-flux-unique-developpement.md)) :
+> tout le périmètre de code est ouvert (socle, Module 1, Module 2, interopérabilité), en **flux de
+> développement unique** (fin des sessions parallèles). J7 devient une revue « prêt pour le pilote ».
+> Décisions **tranchées ce jour** : #4 et cible d'hébergement dev/pilote ([ADR-0005](ADR-0005-multi-tenant-et-hebergement.md)),
+> socle sécurité v1 ([ADR-0006](ADR-0006-socle-securite-v1.md)), #10 confirmée pour tout le produit
+> ([ADR-0002](ADR-0002-stack-technologique-v1.md) via ADR-0004 §7).
+> Restent ouvertes : #1 (souveraineté définitive), #2 (juridique / DPIA), #3 (moteur OCR — choix
+> après bench), #5 (gouvernance du référentiel national), #6/#7/#9/#11/#12. Le code les tient
+> derrière des interfaces ou des fixtures versionnées.
 
 ## ADR produits
 
 | ADR | Objet | Statut |
 |---|---|---|
-| [ADR-0001](ADR-0001-derogation-code-avant-j7.md) | Dérogation « pas de code avant J7 » — démarrage acquisition Module 1 | Accepté |
-| [ADR-0002](ADR-0002-stack-technologique-v1.md) | Stack technologique (périmètre acquisition) — résout partiellement #10 | Accepté |
+| [ADR-0001](ADR-0001-derogation-code-avant-j7.md) | Dérogation « pas de code avant J7 » — acquisition Module 1 | Accepté — **absorbé par ADR-0004** |
+| [ADR-0002](ADR-0002-stack-technologique-v1.md) | Stack technologique — monorepo TypeScript (résout #10) | Accepté (étendu à tout le produit par ADR-0004) |
+| [ADR-0003](ADR-0003-extension-derogation-module-2-orientation.md) | Extension de la dérogation au Module 2 | Accepté — **absorbé par ADR-0004** (§Sessions abrogé) |
+| [ADR-0004](ADR-0004-consolidation-flux-unique-developpement.md) | Consolidation, flux unique, levée du gel — **régime de développement actuel** | Accepté |
+| [ADR-0005](ADR-0005-multi-tenant-et-hebergement.md) | Multi-tenant (#4) : une base PostgreSQL par établissement, on-premise ; `etablissement_id` + RLS | Accepté |
+| [ADR-0006](ADR-0006-socle-securite-v1.md) | Socle sécurité v1 : session serveur + Argon2id + RBAC par établissement | Accepté |
 
 | # | Décision | Impact si non tranchée | Phase d'arbitrage |
 |---|----------|------------------------|-------------------|

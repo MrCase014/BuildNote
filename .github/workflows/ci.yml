@@ -1,6 +1,7 @@
-# CI BuildNote — périmètre code ouvert par ADR-0001 / ADR-0003 (acquisition M1 + orientation M2).
+# CI BuildNote — tout le périmètre de code est ouvert (ADR-0004 ; flux de développement unique).
 # Garde-fous : build TS, lint, lint i18n (ENF-I18N-01), tests (règles non négociables).
-# Réf. docs/17-decisions/ADR-0002-stack-technologique-v1.md §Conséquences.
+# Réf. docs/17-decisions/ADR-0004-consolidation-flux-unique-developpement.md §3,
+#      docs/17-decisions/ADR-0002-stack-technologique-v1.md §Conséquences.
 name: CI
 
 on:
@@ -54,5 +55,5 @@ jobs:
             M2  — le Module 2 n'écrit rien dans Normalized (EF-M2-25)
             TOUS — isolation par etablissement_id sur toute lecture/écriture métier
             TOUS — bilinguisme FR/EN de bout en bout (lint:i18n)
-          Interopérabilité (connecteurs) : hors périmètre — toujours gelée (ADR-0003).
+          Interopérabilité (connecteurs) : ouverte, planifiée en lot L5 (cf. plan-de-developpement).
           EOF
