@@ -142,7 +142,8 @@ BuildNote/
     ├── 13-tests/
     │   └── README.md             # [À produire — Couche 7] O. stratégie et plans de test
     ├── 14-deploiement/
-    │   └── README.md             # [À produire — Couche 7] P. 6 scénarios de déploiement
+    │   ├── README.md             # [Couche 7] P. sommaire déploiement
+    │   └── plan-deploiement.md   # [Couche 7] P. pilote → généralisation par vagues, composants, réversibilité
     ├── 15-livrables-par-phase/
     │   └── livrables.md          # [Couche 1] Q. par phase : objectif/activités/livrables/critères/responsables/dépendances/go-no-go
     ├── 16-risques/
