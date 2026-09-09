@@ -16,6 +16,11 @@
 | Décision | Chaque POC conclut : critères **atteints / partiellement / non atteints** + recommandation motivée. |
 | Sortie | Alimente J7 et le choix des briques technologiques à risque (ADR). |
 
+> **Exécution détaillée de la chaîne d'acquisition** (POC 1, POC 2 et le POC de l'écran de
+> vérification humaine) : voir le dossier [`acquisition/`](acquisition/README.md) — protocole gelé,
+> jeux de données annotés + pseudonymisation, harnais de mesure (formules), maquettes de l'écran de
+> vérification, modèle de rapport.
+
 ## M.1 POC 1 — OCR (reconnaissance)
 
 | Rubrique | Contenu |
@@ -40,6 +45,18 @@
 | **Mesures** | Taux de grille correcte, taux de rapprochement, taux de rôle de colonne correct, temps de repli manuel. |
 | **Risques couverts** | R1. |
 | **Recommandation attendue** | Approche de détection retenue ; rôle et format des gabarits ; ergonomie du repli. |
+
+## M.2-VH POC-VH — Écran de vérification humaine
+
+| Rubrique | Contenu |
+|---|---|
+| **Objectif** | Valider que la **vérification humaine obligatoire** (étape 9 du pipeline) est **opérable au quotidien** : un enseignant voit le formulaire prérempli, repère et corrige les cellules douteuses via le tri par risque et le zoom à la cellule, puis **valide explicitement** — rien n'est enregistré sans cette validation. |
+| **Hypothèses à valider** | H1 : une fiche de ~40 élèves se vérifie en un temps acceptable. H2 : le tri par risque + code couleur évitent le balayage exhaustif. H3 : le zoom à la cellule suffit à trancher les cas douteux. H4 : aucun chemin n'enregistre sans validation explicite. H5 : charge perçue acceptable (SUS/TLX). H6 : contre-validation et résolution de conflit hors-ligne comprises. |
+| **Protocole** | Prototype **basse fidélité** (Magicien d'Oz) rejouant des sorties **réelles figées de POC 1** sur 5 fiches (propre → difficile) avec erreurs OCR injectées connues. 6–8 enseignants + 2 responsables, tâches scénarisées, pense-à-voix, SUS + NASA-TLX. Détail : [`acquisition/verification-humaine.md`](acquisition/verification-humaine.md). |
+| **Critères de succès (chiffrés)** | Temps de revue ≤ 6 min pour 40 élèves (à confirmer) ; détection des cellules erronées ≥ 98 % ; ≥ 80 % des cas douteux tranchés au zoom cellule ; **100 %** des tentatives d'enregistrement sans validation explicite échouent ; SUS ≥ 70 ; NASA-TLX ≤ 50 ; tâches contre-validation + conflit réussies sans aide par ≥ 80 %. |
+| **Mesures** | Temps par fiche, cellules erronées non détectées (dont « en vert »), tâches réussies sans aide, échecs de blocage, SUS, NASA-TLX, verbatims. |
+| **Risques couverts** | R1 (barrière anti-erreur), R9 (adoption enseignants). |
+| **Recommandation attendue** | Ergonomie de l'écran de vérification pour la Couche 11 ; verdict d'opérabilité pour J7 ; charge de revue réelle (retour vers POC 1). |
 
 ## M.3 POC 3 — Interopérabilité
 
@@ -71,6 +88,7 @@
 flowchart LR
     P1["POC 1 OCR"] --> S
     P2["POC 2 Tableaux"] --> S
+    PVH["POC-VH Vérification humaine"] --> S
     P3["POC 3 Interop"] --> S
     P4["POC 4 Orientation"] --> S
     S["Synthèse des POC\n+ budget de run + risques"] --> D{"Décision de construction (J7)"}
@@ -79,5 +97,6 @@ flowchart LR
     D -->|NO-GO| STOP["Arrêt / réorientation"]
 ```
 
-Livrables de la Phase 6 : 4 rapports de POC, jeux de données de test constitués (conservés pour la
-Phase 9), prototypes jetables documentés, note de synthèse et recommandation pour J7.
+Livrables de la Phase 6 : 4 rapports de POC + le rapport POC-VH, jeux de données de test constitués
+(conservés pour la Phase 9), prototypes jetables documentés, note de synthèse et recommandation
+pour J7. Gabarit de rapport : [`acquisition/modele-rapport.md`](acquisition/modele-rapport.md).

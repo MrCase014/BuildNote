@@ -30,12 +30,20 @@ Contexte de conception : SI scolaires hétérogènes ou inexistants, connectivit
 
 ---
 
-## 2. Règles de travail (état au 2026-09-08)
+## 2. Règles de travail (état au 2026-09-09)
 
-- **Aucun code** tant que cadrage → conception → POC ne sont pas validés. Le code démarre en
-  **Phase 8**, après le Go/No-Go de la **Phase 7**. Les phases 0→6 sont **sans code**.
-- Toute la production vit dans **`docs/`** : **Markdown + diagrammes Mermaid**, **en français**
-  (le produit reste bilingue FR/EN).
+- **Code : dérogation en vigueur** ([`docs/17-decisions/ADR-0001`](docs/17-decisions/ADR-0001-derogation-code-avant-j7.md)).
+  Le développement est ouvert **uniquement** sur la **chaîne d'acquisition du Module 1** (capture →
+  formulaire prérempli → vérification humaine → validation → stockage Raw/Normalized), stack fixée
+  par [`ADR-0002`](docs/17-decisions/ADR-0002-stack-technologique-v1.md). **Tout le reste**
+  (Module 2, interopérabilité, autres pans du socle) **reste gelé** jusqu'à J7.
+  - Le moteur OCR n'est **pas** choisi : passer par l'interface `OcrProvider` (fournisseur simulé).
+  - Les règles produit non négociables (§1) sont **vérifiées par des tests** (garde-fous).
+  - Pas de MVP jetable : viser la V1 de production.
+  - Le code vit dans `packages/` et `apps/` ; `docs/` reste la référence d'ingénierie, tout écart
+    code ↔ doc est réconcilié dans `docs/`.
+- La **documentation** vit dans **`docs/`** : **Markdown + diagrammes Mermaid**, **en français**
+  (le produit reste bilingue FR/EN). Le **code** est commenté en français, identifiants en anglais.
 - Production **par couches**, avec une **porte de validation** entre chacune. Ne pas produire une
   couche N+1 tant que la couche N n'est pas validée.
 - **Pas de MVP** (choix du porteur) → recommandation actée : **déploiement pilote progressif**.
@@ -53,7 +61,14 @@ Contexte de conception : SI scolaires hétérogènes ou inexistants, connectivit
 BuildNote/
 ├── CLAUDE.md                     # ce fichier (référence projet)
 ├── AGENTS.md                     # copie identique de CLAUDE.md
+├── README.md                    # entrée développeurs (monorepo, démarrage) — cf. ADR-0001/0002
+├── package.json                 # npm workspaces (packages/*, apps/*)
 ├── images/                       # logos (logo.jpeg, logo1..4.jpeg) — actifs de marque
+├── packages/
+│   └── shared/                  # modèle canonique + contrats Zod (acquisition, OcrProvider) + i18n FR/EN
+├── apps/
+│   ├── api/                     # Fastify + Drizzle (PostgreSQL/PGlite) + BlobStore + OcrProvider — chaîne d'acquisition Module 1
+│   └── web/                     # React + Vite, PWA offline-first — capture + écran de vérification humaine
 └── docs/                         # corpus documentaire d'ingénierie (Markdown + Mermaid)
     ├── README.md                 # PORTE D'ENTRÉE : table des couches + synthèse exécutive (10 points) — suivi d'avancement
     ├── glossaire.md              # [Vivant] terminologie FR/EN imposée
@@ -96,7 +111,11 @@ BuildNote/
     ├── 11-ux-ui/
     │   └── README.md             # [À produire — Couche 6] L. UX, design system (bleu clair / orange / blanc), i18n FR/EN
     ├── 12-poc/
-    │   └── README.md             # [À produire — Couche 7] M. POC OCR, extraction tableaux, interop, moteur d'orientation (jetables)
+    │   ├── README.md             # [Couche 7] M. index des POC (jetables)
+    │   ├── plans-poc.md          # [Couche 7] cadrage des 4 POC + POC-VH + décision J7
+    │   └── acquisition/          # [Couche 7] dossier d'exécution chaîne d'acquisition :
+    │       │                     #   protocole · jeux-de-donnees · harnais-mesure · verification-humaine · modele-rapport
+    │       └── …                 #   couvre POC 1 (OCR), POC 2 (tableaux), POC-VH (écran de vérification humaine)
     ├── 13-tests/
     │   └── README.md             # [À produire — Couche 7] O. stratégie et plans de test
     ├── 14-deploiement/
@@ -137,7 +156,8 @@ BuildNote/
 | Scénarios d'architecture technique, choix de stack | `docs/05-architecture-technique/scenarios-architecture.md` |
 | Strates de données, modèle canonique | `docs/06-architecture-donnees/vue-ensemble.md` ; MCD/MLD/MPD → `modele-conceptuel-logique-physique.md` |
 | Connecteurs, mapping, ETL, qualité des données | `docs/07-interoperabilite/vue-ensemble.md` ; détail → `architecture-detaillee.md` |
-| Pipeline OCR / vérification humaine | `docs/09-moteur-orientation/vue-ensemble.md` (moteur) / `docs/08-ocr-computer-vision/README.md` (pipeline) |
+| Pipeline OCR / vérification humaine | `docs/08-ocr-computer-vision/pipeline.md` (pipeline) |
+| Exécution des POC d'acquisition (OCR, tableaux, écran de vérification) | `docs/12-poc/acquisition/` (protocole · jeux · harnais · verification-humaine · rapport) |
 | Explicabilité, scoring, référentiel national | `docs/09-moteur-orientation/vue-ensemble.md` |
 | Un risque nouveau ou modifié | `docs/16-risques/risques.md` |
 | Une décision structurante | `docs/17-decisions/decisions-prealables.md` (option + recommandation) ou nouvel **ADR** |
@@ -153,11 +173,20 @@ mettre à jour la table de `docs/README.md` **et** l'arborescence de la section 
 
 ## 5. Checklist avant d'écrire
 
+**Pour un document (`docs/`)**
 - [ ] La demande relève-t-elle d'une couche **déjà ouverte** ? Sinon, le signaler et ne pas produire.
-- [ ] Est-ce du **code** ? Si oui → refuser à ce stade (phases 0–6 sans code) et proposer l'équivalent documentaire.
 - [ ] Rédaction **en français**, format **Markdown**, diagrammes en **Mermaid**.
 - [ ] En-tête `Statut` + date présent et cohérent.
 - [ ] Termes conformes au **glossaire** ; enrichir le glossaire si un terme manque.
 - [ ] Liens internes relatifs corrects (`../dossier/fichier.md`).
 - [ ] Répercuter dans `docs/README.md` (table des couches / suivi) et dans l'arborescence de ce fichier si la structure change.
 - [ ] Cohérence avec les **3 règles produit non négociables** (§1) et les décisions déjà arbitrées.
+
+**Pour du code (`packages/`, `apps/`)**
+- [ ] Le périmètre est-il la **chaîne d'acquisition du Module 1** ? Sinon (Module 2, interop, autre socle) → refuser, c'est gelé jusqu'à J7 ([ADR-0001](docs/17-decisions/ADR-0001-derogation-code-avant-j7.md)).
+- [ ] Aucune écriture Normalized sans **validation humaine explicite** (`EF-M1-10`) ; aucun événement/appel Module 2 (`EF-M1-19`) ; Raw **immuable** ; `etablissement_id` sur toute donnée métier.
+- [ ] Reconnaissance uniquement via l'interface **`OcrProvider`** — pas d'appel direct à un moteur, pas de choix de moteur.
+- [ ] Textes UI **externalisés FR/EN** (aucun libellé en dur) ; identifiants en anglais, commentaires en français.
+- [ ] Frontières à risque (OCR, stockage objet, SGBD, auth/tenant) derrière une **interface**.
+- [ ] Tests des garde-fous non négociables ajoutés / maintenus verts.
+- [ ] Réconcilier tout écart code ↔ `docs/` (surtout `06-architecture-donnees/`, `08-ocr-computer-vision/`).

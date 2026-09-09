@@ -4,6 +4,18 @@
 > Ces décisions doivent être **instruites et arbitrées en Phase 2 (Faisabilité)**, avant toute
 > conception d'architecture définitive et **avant toute ligne de code**.
 > Chaque décision arbitrée devient un **ADR** dans ce dossier (`ADR-000x-titre.md`).
+>
+> **2026-09-09 — dérogation** : le développement de la **chaîne d'acquisition du Module 1** a
+> démarré par anticipation ([ADR-0001](ADR-0001-derogation-code-avant-j7.md)), avec une stack fixée
+> pour ce périmètre ([ADR-0002](ADR-0002-stack-technologique-v1.md)). Les décisions #1, #2, #3
+> (moteur OCR), #4, #7 restent ouvertes ; le code les tient derrière des interfaces.
+
+## ADR produits
+
+| ADR | Objet | Statut |
+|---|---|---|
+| [ADR-0001](ADR-0001-derogation-code-avant-j7.md) | Dérogation « pas de code avant J7 » — démarrage acquisition Module 1 | Accepté |
+| [ADR-0002](ADR-0002-stack-technologique-v1.md) | Stack technologique (périmètre acquisition) — résout partiellement #10 | Accepté |
 
 | # | Décision | Impact si non tranchée | Phase d'arbitrage |
 |---|----------|------------------------|-------------------|
@@ -16,7 +28,7 @@
 | 7 | « Pas de MVP » vs pilote progressif | Impacte la roadmap et le budget | 0 → 2 |
 | 8 | Cible de connectivité & exigence hors-ligne | Impacte l'architecture du Module 1 | 2 |
 | 9 | Modèle économique & structure porteuse | Impacte la pérennité | 0 → 2 |
-| 10 | Stack technologique | À figer après faisabilité + POC | 4 (candidats) → 7 (final) |
+| 10 | Stack technologique | À figer après faisabilité + POC | 4 (candidats) → 7 (final) — **partiellement tranchée** : [ADR-0002](ADR-0002-stack-technologique-v1.md) pour l'acquisition |
 | 11 | Politique linguistique | Impacte l'i18n et le multi-pays | 2 |
 | 12 | Propriété intellectuelle & licence | Impacte la diffusion et les partenariats | 0 → 2 |
 

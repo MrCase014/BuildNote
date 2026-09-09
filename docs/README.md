@@ -18,10 +18,10 @@ avec une porte de validation entre chacune (voir [roadmap](01-project-management
 | G | [`06-architecture-donnees/`](06-architecture-donnees/vue-ensemble.md) | Modèles conceptuel / logique / physique ; Raw / Normalized / Intelligence | **1** (vue) → 4 |
 | H | [`07-interoperabilite/`](07-interoperabilite/vue-ensemble.md) | Modèle canonique, connecteurs, mapping, ETL, conflits, lineage, versioning schéma, qualité | **1** (vue) → 4 |
 | I | [`08-ocr-computer-vision/`](08-ocr-computer-vision/) | Pipeline capture → … → validation humaine → stockage | 5 |
-| J | [`09-moteur-orientation/`](09-moteur-orientation/vue-ensemble.md) | Fusion multi-sources + explicabilité + dimension stratégique nationale | **1** (vue) → 5 |
+| J | [`09-moteur-orientation/`](09-moteur-orientation/) | Fusion multi-sources, accès aux données à la demande, explicabilité, dimension stratégique nationale, gabarits de présentation FR/EN | **1** (vue) → 5 |
 | K | [`10-securite/`](10-securite/) | Authn, authz, chiffrement, journalisation, sauvegardes, isolation établissements, audit | 6 |
 | L | [`11-ux-ui/`](11-ux-ui/) | Architecture UX, design system (bleu clair / orange / blanc), i18n FR/EN | 6 |
-| M | [`12-poc/`](12-poc/) | POC OCR, extraction de tableaux, interopérabilité, moteur d'orientation | 7 |
+| M | [`12-poc/`](12-poc/) | POC OCR, extraction de tableaux, interopérabilité, moteur d'orientation, écran de vérification humaine ; dossier d'exécution [`acquisition/`](12-poc/acquisition/README.md) | 7 |
 | O | [`13-tests/`](13-tests/) | Stratégie et plans de test par type | 7 |
 | P | [`14-deploiement/`](14-deploiement/) | 6 scénarios de déploiement | 7 |
 | Q | [`15-livrables-par-phase/`](15-livrables-par-phase/livrables.md) | Pour chaque phase : objectif / activités / livrables / critères / responsables / dépendances / go-no-go | **1** → consolidé 7 |
@@ -210,7 +210,7 @@ et pourquoi, (d) les zones d'incertitude, (e) la part « profil élève » vs «
 (chaque entrée cite sa source et sa date). Aucune carrière n'est imposée ; l'élève, la famille et le
 conseiller gardent la décision.
 
-→ Détail : [`09-moteur-orientation/vue-ensemble.md`](09-moteur-orientation/vue-ensemble.md)
+→ Détail : [`09-moteur-orientation/`](09-moteur-orientation/) — vue d'ensemble, architecture détaillée (accès aux données, scoring, dashboard), gabarits de présentation FR/EN
 
 ## 7. Roadmap complète
 
@@ -223,7 +223,7 @@ timeline
     Phase 3 — Spécification : Cahier des charges (F/NF), critères d'acceptation, KPI, matrice de traçabilité
     Phase 4 — Conception & architecture : Archi fonctionnelle, technique (scénarios comparés), données (MCD/MLD/MPD), interopérabilité, sécurité
     Phase 5 — UX/UI : Architecture UX, design system, wireframes, parcours, i18n FR/EN
-    Phase 6 — POC : POC OCR, POC extraction de tableaux, POC interopérabilité, POC moteur d'orientation
+    Phase 6 — POC : POC OCR, POC extraction de tableaux, POC vérification humaine, POC interopérabilité, POC moteur d'orientation
     Phase 7 — Décision de construction : Go/No-Go global sur la base des POC et du budget
     Phase 8 — Développement itératif : Socle, Module 1, Module 2, interopérabilité, durcissement
     Phase 9 — Vérification & recette : Tests unitaires → interopérabilité → sécurité → performance → utilisateurs
@@ -252,7 +252,7 @@ Extrait (livrables principaux) :
 | 3 — Spécification | Cahier des charges (exigences F & NF), critères d'acceptation, dictionnaire des KPI, matrice de traçabilité des exigences |
 | 4 — Conception | Dossiers d'architecture fonctionnelle / technique (scénarios comparés + choix) / données (MCD, MLD, MPD) / interopérabilité / sécurité (modèle de menaces) |
 | 5 — UX/UI | Architecture de l'information, design system (palette bleu clair / orange / blanc), wireframes, prototypes de parcours, spécification i18n FR/EN |
-| 6 — POC | 4 rapports de POC avec résultats chiffrés vs critères de succès, recommandation de poursuite |
+| 6 — POC | 4 rapports de POC + rapport POC-VH (écran de vérification humaine), résultats chiffrés vs critères de succès, recommandation de poursuite ; dossier d'exécution de la chaîne d'acquisition ([`12-poc/acquisition/`](12-poc/acquisition/README.md)) |
 | 7 — Décision | Dossier de décision de construction, plan de développement détaillé, plan de test, plan de déploiement |
 | 8 — Développement | Incréments logiciels vérifiés (socle, Module 1, Module 2, interopérabilité), documentation technique, jeux de tests |
 | 9 — Recette | Rapports de tests (unitaires, intégration, système, OCR, données, sécurité, performance, utilisateurs, interopérabilité), PV de recette |

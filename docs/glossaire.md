@@ -56,6 +56,15 @@
 | Document Understanding | Document understanding | Compréhension de la structure et du sens d'un document au-delà du texte brut. |
 | Détection de tableaux | Table detection / extraction | Reconnaissance des lignes/colonnes/cellules d'un tableau dans une image. |
 | CER / WER | CER / WER | Character / Word Error Rate — métriques de qualité de l'OCR. |
+| Vérité terrain | Ground truth | Transcription/annotation de référence (validée par l'humain) contre laquelle on mesure les sorties d'un moteur. |
+| Harnais de mesure | Evaluation harness | Outil (jetable, en POC) qui compare les prédictions à la vérité terrain et produit les métriques. |
+| Exactitude cellule | Cell accuracy | Part de cellules dont la valeur reconnue est correcte, sur les cellules comparables. |
+| Matrice de confusion | Confusion matrix | Tableau croisant valeurs attendues et prédites (ici : confusions entre chiffres). |
+| Calibration (du score de confiance) | Confidence calibration | Adéquation entre le score annoncé et l'exactitude réellement observée (mesurée par l'ECE, courbe de fiabilité). |
+| Accord inter-annotateur | Inter-annotator agreement | Degré de concordance entre deux annotateurs indépendants (ex. kappa de Cohen). |
+| Pseudonymisation | Pseudonymization | Remplacement des identifiants directs par des valeurs fictives réversibles via une table conservée à part. |
+| Magicien d'Oz | Wizard of Oz | Test où une fonction non développée (ici l'OCR) est simulée par un facilitateur, pour évaluer l'ergonomie en amont. |
+| SUS / NASA-TLX | SUS / NASA-TLX | Questionnaires standard d'utilisabilité perçue (SUS) et de charge de travail perçue (NASA-TLX). |
 | Explicabilité | Explainability (XAI) | Capacité à justifier une recommandation (facteurs, poids, alternatives, incertitudes). |
 | Offline-first | Offline-first | Conception privilégiant le fonctionnement sans connexion, avec synchronisation différée. |
 | i18n | i18n (internationalization) | Internationalisation : ici, bilinguisme FR/EN de bout en bout, extensible. |
