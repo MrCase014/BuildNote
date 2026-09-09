@@ -1,8 +1,16 @@
 # G. Architecture des données — Vue d'ensemble
 
-> **Statut : En revue — Couche 1.** Date : 2026-09-08.
-> Les modèles conceptuel / logique / physique détaillés (MCD, MLD, MPD, dictionnaire de données)
-> sont produits en Couche 4.
+> **Statut : En revue — Couche 1.** Date : 2026-09-08 (rév. 2026-09-09).
+> Les modèles conceptuel / logique / physique détaillés (MCD, MLD, MPD) et le dictionnaire de
+> données sont produits en Couche 4 :
+> [`modele-conceptuel-logique-physique.md`](modele-conceptuel-logique-physique.md),
+> [`dictionnaire-donnees.md`](dictionnaire-donnees.md),
+> [`cycle-de-vie-stockage.md`](cycle-de-vie-stockage.md). Index : [`README.md`](README.md).
+>
+> **Qui fait foi ?** Le modèle **Normalized** (forme des données métier) est spécifié ici ; le
+> **schéma canonique d'échange** en est la **projection versionnée publiquement**
+> ([`../07-interoperabilite/architecture-detaillee.md`](../07-interoperabilite/architecture-detaillee.md) §H.1).
+> Le **dictionnaire** est la référence unique au niveau champ.
 
 ## G.1 Trois strates séparées
 
@@ -113,11 +121,13 @@ erDiagram
 | Données strictement nécessaires au Module 2 (intérêts, avis parents) | DPIA — Phase 2 |
 | Anonymisation / pseudonymisation pour l'analyse agrégée | Couche 6 — [`10-securite/`](../10-securite/) |
 
-## G.7 Ce qui vient en Couche 4
+## G.7 Livrables Couche 4 (produits)
 
-- Modèle **Conceptuel** (MCD complet, toutes entités et relations).
-- Modèle **Logique** (MLD : tables, clés, normalisation, index candidats).
-- Modèle **Physique** (MPD : selon le(s) SGBD retenu(s), partitionnement multi-tenant, stockage des
-  médias, stratégie Raw vs Normalized vs Intelligence).
-- **Dictionnaire de données** (chaque champ : type, obligatoire, source, règle, sensibilité).
-- **Stratégie de versioning** du schéma canonique et de migration.
+| Livrable | Document | Statut |
+|---|---|---|
+| Modèle **Conceptuel** (MCD, toutes entités et relations) | [`modele-conceptuel-logique-physique.md`](modele-conceptuel-logique-physique.md) §G.1 | En revue |
+| Modèle **Logique** (MLD : tables, clés, normalisation, index candidats) | idem §G.2 | En revue |
+| Modèle **Physique** (MPD : orientations SGBD, partitionnement multi-tenant, stockage des médias, stratégie Raw/Normalized/Intelligence) | idem §G.3–G.4 | En revue |
+| **Dictionnaire de données** (chaque champ : type, obligatoire, source, règle, sensibilité, strate) | [`dictionnaire-donnees.md`](dictionnaire-donnees.md) | En revue — gel prévu J4 |
+| **Cycle de vie du stockage** (rétention, purge, archivage, sauvegarde, chiffrement, coûts) | [`cycle-de-vie-stockage.md`](cycle-de-vie-stockage.md) | En revue |
+| **Stratégie de versioning** du schéma canonique et de migration | [`modele-conceptuel-logique-physique.md`](modele-conceptuel-logique-physique.md) §G.6 + [`../07-interoperabilite/architecture-detaillee.md`](../07-interoperabilite/architecture-detaillee.md) §H.8 | En revue |

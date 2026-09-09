@@ -1,13 +1,25 @@
 # H. Interopérabilité — Architecture détaillée
 
-> **Statut : En revue — Couche 4.** Date : 2026-09-08.
-> Complète [`vue-ensemble.md`](vue-ensemble.md).
+> **Statut : En revue — Couche 4.** Date : 2026-09-08 (rév. 2026-09-09).
+> Complète [`vue-ensemble.md`](vue-ensemble.md). Voir aussi :
+> [`etl-orchestration.md`](etl-orchestration.md) (exécution des flux),
+> [`exemples-mapping.md`](exemples-mapping.md) (archétypes),
+> [`flux-et-sequences.md`](flux-et-sequences.md) (séquences),
+> [`export-reversibilite.md`](export-reversibilite.md) (format d'export).
 
 ## H.1 Modèle canonique (spécification)
 
-Le modèle canonique = le sous-ensemble « Normalized Data » du modèle de données
+Le modèle canonique d'échange = le sous-ensemble « Normalized Data » du modèle de données
 ([`../06-architecture-donnees/modele-conceptuel-logique-physique.md`](../06-architecture-donnees/modele-conceptuel-logique-physique.md))
-exposé sous forme de **schéma d'échange documenté et versionné**.
+exposé sous forme de **schéma d'échange documenté et versionné publiquement**.
+
+> **Qui fait foi.** La **forme interne** des données (entités, attributs, contraintes) est définie
+> en [`../06-architecture-donnees/`](../06-architecture-donnees/README.md) — c'est la source de
+> vérité. Le schéma d'échange décrit ici en est la **projection** : il peut restreindre, renommer
+> ou aplatir pour l'échange, mais **n'introduit aucune entité ni aucun champ absent du modèle
+> Normalized**. Le **dictionnaire de données**
+> ([`../06-architecture-donnees/dictionnaire-donnees.md`](../06-architecture-donnees/dictionnaire-donnees.md))
+> reste la référence unique au niveau champ ; le schéma d'échange le cite.
 
 ### H.1.1 Entités canoniques d'échange (V1)
 `Etablissement`, `AnneeScolaire`, `PeriodeScolaire`, `Niveau`, `Classe`, `Personne` (+ rôles
@@ -101,7 +113,20 @@ mapping:
 - Détection des valeurs distinctes d'une colonne pour construire les `tables_valeurs`.
 - Prévisualisation sur un échantillon avant exécution.
 
+### H.3.5 Exemples complets
+
+Trois mappings travaillés **bout en bout** (schéma source, fichier de mapping, tables de valeurs,
+cas de quarantaine et de conflit, résultat attendu) dans
+[`exemples-mapping.md`](exemples-mapping.md) : (A) SGBD MySQL d'une application scolaire, (B) fichiers
+CSV/Excel tenus à la main, (C) ancienne application fermée via *dump*. Ces trois mappings forment la
+**bibliothèque de référence** de la CI d'interopérabilité (§H.8).
+
 ## H.4 Pipeline d'exécution
+
+> Le **contrat par étape** (entrées/sorties, idempotence, comportement en cas d'échec),
+> l'ordonnancement, la reprise, le *dead-letter* et l'observabilité sont spécifiés dans
+> [`etl-orchestration.md`](etl-orchestration.md). Les **séquences** correspondantes (import initial,
+> synchro incrémentale, rejeu après correction) sont dans [`flux-et-sequences.md`](flux-et-sequences.md).
 
 ```mermaid
 flowchart TB
@@ -153,7 +178,9 @@ flowchart TB
 
 ### H.5.3 Règle forte
 Une **note validée par le Module 1** n'est **jamais écrasée** par un import : tout écart va en
-**revue manuelle** avec les deux valeurs, leurs sources et leur lineage.
+**revue manuelle** avec les deux valeurs, leurs sources et leur lineage. Séquences détaillées
+(import ↔ note validée, import ↔ agent local hors-ligne) : [`flux-et-sequences.md`](flux-et-sequences.md)
+§H-S.4 et §H-S.5.
 
 ### H.5.4 Journal des résolutions
 Chaque conflit résolu (auto ou manuel) est journalisé : entité, champ, valeurs en présence, sources,
@@ -190,12 +217,13 @@ Le lineage est **consultable** depuis la fiche de toute donnée (d'où vient cet
 | Synchronisation | Planifiée (ex. nocturne) ou événementielle si API | **Incrémentale** (curseur / `modifie_depuis`) |
 | Import ponctuel | Manuel (assistant) | Fichiers CSV/Excel |
 | Export tiers | Manuel ou planifié | Canonique → transformation de sortie → connecteur |
-| Export de réversibilité | Manuel (rôle habilité) | **Intégralité** du patrimoine au format canonique documenté |
+| Export de réversibilité | Manuel (rôle habilité) | **Intégralité** du patrimoine au format canonique documenté — format et procédure de ré-import : [`export-reversibilite.md`](export-reversibilite.md) |
 
 **ETL** : l'orchestration des flux batch (extraction → transformation → chargement → contrôle
 qualité) est un composant dédié (voir scénario d'architecture C —
 [`../05-architecture-technique/scenarios-architecture.md`](../05-architecture-technique/scenarios-architecture.md)),
-dimensionné séparément pour ne pas impacter la saisie du Module 1.
+dimensionné séparément pour ne pas impacter la saisie du Module 1. **Spécification complète** :
+[`etl-orchestration.md`](etl-orchestration.md).
 
 ## H.8 Versioning du schéma canonique (interopérabilité)
 
@@ -230,7 +258,9 @@ dimensionné séparément pour ne pas impacter la saisie du Module 1.
 
 ## H.11 Lien avec le POC 3
 
-Le [POC interopérabilité](../12-poc/README.md) validera cette architecture sur **2–3 systèmes
-réels** : un SGBD, un export CSV/Excel, et si possible une ancienne application. Critères : import
-d'un établissement type sans développement lourd, taux de quarantaine maîtrisé, lineage complet,
-export canonique réimportable dans une instance vierge.
+Le [POC interopérabilité](../12-poc/plans-poc.md) validera cette architecture sur **2–3 systèmes
+réels** correspondant aux [trois archétypes](exemples-mapping.md) : un SGBD, un export CSV/Excel, et
+si possible une ancienne application. Critères : import d'un établissement type sans développement
+lourd, taux de quarantaine maîtrisé, débit conforme à `ENF-PERF-06`, lineage complet, export
+canonique réimportable dans une instance vierge avec **test d'équivalence** réussi
+([`export-reversibilite.md`](export-reversibilite.md) §H-REV.5).

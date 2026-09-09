@@ -1,8 +1,15 @@
 # G. Modèles conceptuel, logique et physique — BuildNote
 
-> **Statut : En revue — Couche 4.** Date : 2026-09-08.
+> **Statut : En revue — Couche 4.** Date : 2026-09-08 (rév. 2026-09-09).
 > Complète [`vue-ensemble.md`](vue-ensemble.md). Les types physiques exacts dépendent du SGBD retenu
 > (Phase 7) ; les principes ci-dessous sont indépendants du SGBD.
+> Le détail **champ par champ** (type logique, obligatoire, valeurs, règle, sensibilité) est dans
+> [`dictionnaire-donnees.md`](dictionnaire-donnees.md). Le cycle de vie physique (rétention, purge,
+> sauvegarde) est dans [`cycle-de-vie-stockage.md`](cycle-de-vie-stockage.md).
+>
+> **Frontière avec l'interopérabilité** : ce document définit la **forme interne** des données
+> (source de vérité). Le **schéma canonique d'échange** publié aux établissements en est une
+> projection versionnée — [`../07-interoperabilite/architecture-detaillee.md`](../07-interoperabilite/architecture-detaillee.md) §H.1.
 
 ## G.1 Modèle Conceptuel de Données (MCD)
 
@@ -260,8 +267,9 @@ d'isolation. À trancher en Phase 4 selon la volumétrie de fin de Phase 0.
 ## G.5 Dictionnaire de données
 
 Le dictionnaire complet (chaque champ : nom, type logique, obligatoire, valeurs admises, règle de
-gestion, sensibilité RGPD/PII, strate, source) est un artefact tabulaire maintenu à partir de la
-Phase 4 et gelé à J4. Modèle de ligne :
+gestion, sensibilité RGPD/PII, strate, source) est produit dans
+**[`dictionnaire-donnees.md`](dictionnaire-donnees.md)** — maintenu depuis la Phase 4, **gel prévu à
+J4**. Modèle de ligne :
 
 | Champ | Entité | Type logique | Oblig. | Valeurs / règle | Sensibilité | Strate | Source |
 |---|---|---|---|---|---|---|---|

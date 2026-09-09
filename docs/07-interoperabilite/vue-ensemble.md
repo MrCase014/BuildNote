@@ -1,9 +1,12 @@
 # H. Interopérabilité — Vue d'ensemble
 
-> **Statut : En revue — Couche 1.** Date : 2026-09-08.
-> Spécification détaillée (catalogue de connecteurs, langage de mapping, règles de transformation et
-> de validation, gestion fine des conflits, lineage, versioning de schéma, tableau de bord qualité)
-> en Couche 4.
+> **Statut : En revue — Couche 1.** Date : 2026-09-08 (rév. 2026-09-09).
+> Spécification détaillée produite en Couche 4 : [`architecture-detaillee.md`](architecture-detaillee.md)
+> (canonique, connecteurs, mapping, conflits, lineage, versioning, qualité),
+> [`etl-orchestration.md`](etl-orchestration.md) (exécution des flux),
+> [`exemples-mapping.md`](exemples-mapping.md) (3 archétypes bout en bout),
+> [`flux-et-sequences.md`](flux-et-sequences.md) (diagrammes de séquence),
+> [`export-reversibilite.md`](export-reversibilite.md) (format d'export). Index : [`README.md`](README.md).
 
 ## H.1 Position du problème
 
@@ -92,14 +95,20 @@ flowchart TB
 8. **Séparation des tenants** : un connecteur est rattaché à un établissement ; pas de flux
    inter-établissements.
 
-## H.6 Ce qui vient en Couche 4
+## H.6 Livrables Couche 4 (produits)
 
-- Spécification formelle du **modèle canonique** (entités, attributs, clés de rapprochement).
-- **Catalogue des connecteurs** cibles pour la V1 + priorisation.
-- **Format du fichier de mapping** (grammaire, exemples pour 2–3 systèmes types).
-- **Règles de transformation et de validation** de référence.
-- **Politique de gestion des conflits** par entité et par champ.
-- **Modèle de lineage** et schéma de la base de traçabilité.
-- **Processus de versioning** du schéma canonique et procédure de migration.
-- Maquette du **tableau de bord qualité des données**.
-- Lien avec le **POC interopérabilité** (Couche 7 — [`12-poc/`](../12-poc/)).
+| Livrable | Document |
+|---|---|
+| Spécification du **modèle canonique d'échange** (entités, attributs, clés de rapprochement, formats) | [`architecture-detaillee.md`](architecture-detaillee.md) §H.1 |
+| **Catalogue des connecteurs** V1 + priorisation | idem §H.2 |
+| **Grammaire du fichier de mapping** + fonctions de transformation | idem §H.3 |
+| **3 exemples de mapping bout en bout** (SGBD MySQL, CSV/Excel, dump legacy) | [`exemples-mapping.md`](exemples-mapping.md) |
+| **Règles de transformation et de validation** de référence | [`architecture-detaillee.md`](architecture-detaillee.md) §H.4 |
+| **Politique de gestion des conflits** par entité et par champ | idem §H.5 |
+| **Modèle de lineage** | idem §H.6 + [`../06-architecture-donnees/dictionnaire-donnees.md`](../06-architecture-donnees/dictionnaire-donnees.md) §G-DIC.8 |
+| **Spécification ETL / orchestration** (flux, reprise, dead-letter, observabilité, dimensionnement) | [`etl-orchestration.md`](etl-orchestration.md) |
+| **Diagrammes de séquence** (imports, synchros, conflits, offline, export) | [`flux-et-sequences.md`](flux-et-sequences.md) |
+| **Processus de versioning** du canonique + migration | [`architecture-detaillee.md`](architecture-detaillee.md) §H.8 |
+| **Tableau de bord qualité des données** | idem §H.9 |
+| **Format d'export de réversibilité** + test d'équivalence | [`export-reversibilite.md`](export-reversibilite.md) |
+| Lien avec le **POC interopérabilité** | [`../12-poc/plans-poc.md`](../12-poc/plans-poc.md) |
