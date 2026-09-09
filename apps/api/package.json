@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "API de la chaîne d'acquisition du Module 1 (Fastify + Drizzle + OcrProvider simulé). Cf. ADR-0001/0002.",
+  "description": "API BuildNote : chaîne d'acquisition (Module 1) + service orientation (Module 2). Fastify + Drizzle + OcrProvider simulé. Cf. ADR-0001/0002/0003.",
   "main": "src/server.ts",
   "scripts": {
     "dev": "tsx watch src/server.ts",
